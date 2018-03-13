@@ -10,8 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -43,7 +45,7 @@ public class Main {
             e.printStackTrace();
         }
         JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(cropped)); */
-        System.out.println(System.currentTimeMillis());
+        long startTime = System.nanoTime();
 
 
         //BufferedImage cropped = cropImage(bufferedImage, new Rectangle(49, 97), new Rectangle(305, 250)); //fanta
@@ -61,16 +63,20 @@ public class Main {
         } catch (IOException e) {
         }
 
-        findImages(image, mapVisitedWidth, mapVisitedHeight, bufferedImage, fantaImg, cocaImg, pepsiImg);
+        findImages(image, bufferedImage, fantaImg, cocaImg, pepsiImg);
         Image scaledInstance = bufferedImage.getScaledInstance(600, 600, Image.SCALE_SMOOTH);
+
+        long endTime = System.nanoTime();
+        long totalTime = endTime - startTime;
+        System.out.println(totalTime);
+        System.out.println(TimeUnit.NANOSECONDS.toSeconds(totalTime));
 
         JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(scaledInstance));
 
-        System.out.println(System.currentTimeMillis());
 
     }
 
-    private void findImages(Image image, HashMap<String, HashSet<Integer>> visitedWidth, HashMap<String, HashSet<Integer>> visitedHeight, BufferedImage bufferedImage, BufferedImage fantaImg, BufferedImage cocaImg, BufferedImage pepsiImg) {
+    private void findImages(Image image, BufferedImage bufferedImage, BufferedImage fantaImg, BufferedImage cocaImg, BufferedImage pepsiImg) {
         for (int i = 0; i < image.getWidth(null); i=i+2) {
             for (int j = 0; j < image.getWidth(null); j=j+1) {
                 if (i == 49 && j == 97) {
