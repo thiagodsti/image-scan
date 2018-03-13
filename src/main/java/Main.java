@@ -36,15 +36,10 @@ public class Main {
         System.out.println(bufferedImage.getWidth()); //49
         System.out.println(bufferedImage.getHeight()); //97
         //JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(bufferedImage));
-        /*BufferedImage cropped = cropImage(bufferedImage, new Rectangle(49, 97), new Rectangle(76, 250)); //pepsi
-        JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(cropped));
-        File file = new File("/media/truecrypt1/workspace/image-scan/src/main/resources/pepsi.png");
-        try {
-            ImageIO.write(cropped, "png", file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(cropped)); */
+        //BufferedImage cropped = cropImageAndShow(bufferedImage, new Rectangle(49, 97), new Rectangle(79, 250));
+        //saveImage(cropped, "pepsi.png");
+
+
         long startTime = System.nanoTime();
 
 
@@ -76,17 +71,26 @@ public class Main {
 
     }
 
+    private void saveImage(BufferedImage cropped, String name) {
+        File file = new File("/media/truecrypt1/workspace/image-scan/src/main/resources/" + name);
+        try {
+            ImageIO.write(cropped, "png", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(cropped));
+    }
+
+    private BufferedImage cropImageAndShow(BufferedImage bufferedImage, Rectangle size, Rectangle position) {
+        BufferedImage cropped = cropImage(bufferedImage, size, position);
+        JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(cropped));
+        return cropped;
+
+    }
+
     private void findImages(Image image, BufferedImage bufferedImage, BufferedImage fantaImg, BufferedImage cocaImg, BufferedImage pepsiImg) {
         for (int i = 0; i < image.getWidth(null); i=i+2) {
             for (int j = 0; j < image.getWidth(null); j=j+1) {
-                if (i == 49 && j == 97) {
-                    System.out.println(image.getWidth(null) + " : " + i);
-                    System.out.println(image.getHeight(null) + " : " + j);
-                }
-
-                if (i % 100 == 0 && j % 100 == 0) {
-                    System.out.println("multiplo de 100");
-                }
                 try {
                     BufferedImage cropped = cropImage(bufferedImage, new Rectangle(49, 97), new Rectangle(i, j));
                     double differencePercent = getDifferencePercent(cropped, fantaImg);
@@ -104,7 +108,7 @@ public class Main {
         }
     }
 
-    private int calculateSimilarity(BufferedImage bufferedImage, int i, int j, double differencePercent, int i2, Color green, String type) {
+    private int calculateSimilarity(BufferedImage bufferedImage, int i, int j, double differencePercent, int limitPercent, Color green, String type) {
         HashSet<Integer> visitedWidth = mapVisitedWidth.get(type);
         if (visitedWidth == null ) {
             visitedWidth = new HashSet<>();
@@ -113,7 +117,7 @@ public class Main {
         if (visitedHeight == null) {
             visitedHeight = new HashSet<>();
         }
-        if (differencePercent < i2 && !visitedWidth.contains(i) && !visitedHeight.contains(j)) {
+        if (differencePercent < limitPercent && !visitedWidth.contains(i) && !visitedHeight.contains(j)) {
             visitedWidth.add(i);
             visitedWidth.add(i + 1);
             visitedWidth.add(i + 2);
@@ -121,8 +125,7 @@ public class Main {
             visitedWidth.add(i + 4);
             visitedWidth.add(i + 5);
             mapVisitedWidth.put(type, visitedWidth);
-
-            System.out.println("Puco diferente: " + differencePercent + " i: " + i + " j: " + j);
+            
             Graphics2D graph = (Graphics2D) bufferedImage.getGraphics();
             graph.setColor(green);
             graph.draw(new Rectangle(i, j, 49, 97));
