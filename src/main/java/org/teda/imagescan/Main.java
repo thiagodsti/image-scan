@@ -78,23 +78,15 @@ public class Main {
         Image image = icon.getImage();
 
 
-        BufferedImage bufferedImage = toBufferedImage(image);
-        Image scaledInstance = bufferedImage.getScaledInstance(600, 600, Image.SCALE_SMOOTH);
+        BufferedImage gondola = toBufferedImage(image);
+        Image scaledInstance = gondola.getScaledInstance(600, 600, Image.SCALE_SMOOTH);
         JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(scaledInstance));
-        //BufferedImage cropped = cropImageAndShow(bufferedImage, new Rectangle(49, 97), new Rectangle(79, 250));
-        //saveImage(cropped, "pepsi.png");
-
 
         long startTime = System.nanoTime();
 
-
-        //BufferedImage cropped = cropImage(bufferedImage, new Rectangle(49, 97), new Rectangle(305, 250)); //fanta
-        //JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(cropped));
-
-
-        findImages(bufferedImage, imagesToScan);
-        JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(bufferedImage));
-        scaledInstance = bufferedImage.getScaledInstance(600, 600, Image.SCALE_SMOOTH);
+        scan(gondola, imagesToScan);
+        JOptionPane.showMessageDialog(null, null, null, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(gondola));
+        scaledInstance = gondola.getScaledInstance(600, 600, Image.SCALE_SMOOTH);
 
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
@@ -131,7 +123,7 @@ public class Main {
 
     }
 
-    private void findImages(BufferedImage gondola, List<ImageScan> scans) {
+    private void scan(BufferedImage gondola, List<ImageScan> scans) {
         for (int i = 0; i < gondola.getWidth(); i=i+2) {
             for (int j = 0; j < gondola.getHeight(); j=j+1) {
                 try {
@@ -154,13 +146,6 @@ public class Main {
                             break;
                         }
                     }
-
-                   // differencePercent = getDifferencePercent(cropped, cocaImg);
-                   // j = calculateSimilarity(gondola, i, j, differencePercent, 10, Color.RED, "Coca");
-
-                   // differencePercent = getDifferencePercent(cropped, pepsiImg);
-                   // j = calculateSimilarity(gondola, i, j, differencePercent, 12, Color.BLUE, "Pepsi");
-
                 } catch (RasterFormatException ex) {
                 }
             }
